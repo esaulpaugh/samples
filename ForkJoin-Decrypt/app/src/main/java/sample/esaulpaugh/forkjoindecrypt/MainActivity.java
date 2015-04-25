@@ -19,6 +19,10 @@ package sample.esaulpaugh.forkjoindecrypt;
 import android.app.Activity;
 import android.os.Bundle;
 
+/**
+ *
+ * @author esaulpaugh
+ */
 public class MainActivity extends Activity {
 
     @Override

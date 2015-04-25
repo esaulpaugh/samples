@@ -30,7 +30,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- *
+ * A recursive divide-and-conquer approach to decryption in parallel.
  * @author esaulpaugh
  */
 public class ForkJoinDecryptTask extends RecursiveAction {
@@ -127,7 +127,8 @@ public class ForkJoinDecryptTask extends RecursiveAction {
             this.output = output;
             this.cipherBlockSize = cipherPool.getCipherBlockSize();
             if(maxPartLength < cipherPool.getCipherBlockSize()) {
-                throw new IllegalArgumentException("maxPartLength cannot be less than cipher block size: " + maxPartLength + " < " + cipherPool.getCipherBlockSize());
+                throw new IllegalArgumentException("maxPartLength cannot be less than cipher block size: "
+                        + maxPartLength + " < " + cipherPool.getCipherBlockSize());
             }
             this.maxPartLength = maxPartLength;
         }
@@ -139,7 +140,8 @@ public class ForkJoinDecryptTask extends RecursiveAction {
      */
     private static void checkNotSupported(final String algorithm) {
         if(algorithm.contains("PBE") && (algorithm.contains("SHA") || algorithm.contains("MD5")))
-            throw new UnsupportedOperationException("Unsupported algorithm: " + algorithm + "	 This class does not support password-based encryption algorithms.");
+            throw new UnsupportedOperationException("Unsupported algorithm: " + algorithm
+                    + "\tThis class does not support password-based encryption algorithms.");
         int idx = algorithm.indexOf('/');
         if(idx == -1)
             return;
@@ -149,12 +151,14 @@ public class ForkJoinDecryptTask extends RecursiveAction {
         case "CTR":
         case "OFB":
         case "PCBC":
-            throw new UnsupportedOperationException("Unsupported algorithm: " + algorithm + '\t' + mode + " mode does not allow for parallelized decryption");
+            throw new UnsupportedOperationException("Unsupported algorithm: " + algorithm
+                    + '\t' + mode + " mode does not allow for parallelized decryption");
         case "CCM":
         case "OCB":
         case "EAX":
         case "GCM":
-            throw new UnsupportedOperationException("Unsupported algorithm: " + algorithm + "\t This class does not support authenticated encryption algorithms.");
+            throw new UnsupportedOperationException("Unsupported algorithm: " + algorithm
+                    + "\tThis class does not support authenticated encryption algorithms.");
         }
     }
 
@@ -191,16 +195,19 @@ public class ForkJoinDecryptTask extends RecursiveAction {
             } else {
                 cipher.doFinal(params.input, offset, inputLen, params.output, offset);
             }
-        } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException
+                | IllegalBlockSizeException | BadPaddingException ex) {
             ex.printStackTrace();
         } catch (ShortBufferException sbe) {
             sbe.printStackTrace();
             System.err.println(cipher.getAlgorithm() + " " + cipher.getProvider());
-            if (sbe.getMessage().contains("output buffer too small during update") && cipher.getProvider().getName().equals(ANDROID_OPEN_SSL)) {
+            if (sbe.getMessage().contains("output buffer too small during update")
+                    && cipher.getProvider().getName().equals(ANDROID_OPEN_SSL)) {
                 if (!cipher.getAlgorithm().endsWith(SUFFIX_NO_PADDING)) {
                     new BadPaddingException(cipher.getProvider() + " " + cipher.getAlgorithm()
-                                    + " Try a different provider or give a larger output buffer, or use /NoPadding."
-                                    + " See https://bugs.openjdk.java.net/browse/JDK-4513830 for related information.").printStackTrace();
+                            + " Try a different provider or give a larger output buffer, or use /NoPadding."
+                            + " See https://bugs.openjdk.java.net/browse/JDK-4513830 for related information.")
+                            .printStackTrace();
                 }
             }
         } finally {

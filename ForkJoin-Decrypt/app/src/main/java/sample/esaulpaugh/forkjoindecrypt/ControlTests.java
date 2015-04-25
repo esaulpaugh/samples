@@ -36,7 +36,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Should be thread-safe.
- * Created by Evan Saulpaugh on 4/22/15.
+ * @author esaulpaugh
  */
 public class ControlTests {
 

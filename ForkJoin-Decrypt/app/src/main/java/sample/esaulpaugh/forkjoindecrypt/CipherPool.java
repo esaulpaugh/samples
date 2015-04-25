@@ -25,16 +25,16 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 
 /**
- * Created by Evan Saulpaugh on 4/15/15.
+ * A thread-safe pool of {@link Cipher} instances.
+ * @author esaulpaugh
  */
 public class CipherPool {
 
     private final String algorithm;
     private final Provider provider;
-    private final Stack<Cipher> pool = new Stack<>();
-    private final int initialPoolSize;
+    private final Stack<Cipher> pool;
     private final int maxPoolSize;
-    private int cipherBlockSize;
+    private final int cipherBlockSize;
 
     public CipherPool(String algorithm) {
         this(algorithm, null);
@@ -49,32 +49,26 @@ public class CipherPool {
     }
 
     public CipherPool(String algorithm, Provider provider, int cipherBlockSize, int initialPoolSize, int maxPoolSize) {
-        this.algorithm = algorithm;
-        this.provider = provider;
-        this.cipherBlockSize = cipherBlockSize;
-        this.initialPoolSize = initialPoolSize;
-        this.maxPoolSize = maxPoolSize;
         if(initialPoolSize < 0) {
             throw new IllegalArgumentException("initialPoolSize must be non-negative");
         }
         if(initialPoolSize > maxPoolSize) {
-            throw new IllegalArgumentException("initialPoolSize cannot be greater than maxPoolSize: " + initialPoolSize + " > " + maxPoolSize);
+            throw new IllegalArgumentException("initialPoolSize cannot be greater than maxPoolSize: "
+                    + initialPoolSize + " > " + maxPoolSize);
         }
-        init();
-    }
-
-    private void init() {
+        this.algorithm = algorithm;
+        this.provider = provider;
+        this.pool  = new Stack<>();
+        this.maxPoolSize = maxPoolSize;
         if(cipherBlockSize == -1) {
             Cipher c = createCipherInstance();
             this.cipherBlockSize = c.getBlockSize();
             if(initialPoolSize > 0) {
                 pool.push(c);
             }
+        } else {
+            this.cipherBlockSize = cipherBlockSize;
         }
-        fillPool();
-    }
-
-    private void fillPool() {
         for (int i = pool.size(); i < initialPoolSize; i++) {
             pool.push(createCipherInstance());
         }
@@ -101,7 +95,7 @@ public class CipherPool {
     }
 
     /**
-     * Gets a Cipher instance from the specified pool. If the pool is empty, this method does not block, but instead returns a new Cipher instance.
+     * Attempts to borrow a Cipher instance from the pool. If the pool is empty, this method returns a new Cipher instance.
      * @return
      */
     public synchronized Cipher getCipher() {
@@ -112,7 +106,7 @@ public class CipherPool {
     }
 
     /**
-     * Attempts to return a Cipher instance to the specified pool. If the pool is full, this method does nothing.
+     * Attempts to return a Cipher instance to the pool. If the pool is full, this method does nothing.
      * @param cipher
      */
     public synchronized void returnCipher(Cipher cipher) {

@@ -37,7 +37,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Created by Evan Saulpaugh on 4/21/15.
+ *
+ * @author esaulpaugh
  */
 public class TestDecrypt {
 
@@ -231,15 +232,12 @@ public class TestDecrypt {
     private static byte[] execute(int decryptMethod, CipherPool cipherPool, byte[] ciphertext, SecretKeySpec key, AlgorithmParameterSpec params, int outputBufferLen) {
 //        System.out.println("execute " + decryptMethodToString(decryptMethod) + " " + cipherPool.getAlgorithm());
         switch (decryptMethod) {
-        case SINGLE_THREADED: {
+        case SINGLE_THREADED:
             return ControlTests.decryptSingleThreaded(cipherPool, ciphertext, key, params);
-        }
-        case MULTI_THREADED: {
+        case MULTI_THREADED:
             return ControlTests.decryptMultithreaded(cipherPool, ciphertext, key, params, outputBufferLen, MULTITHREADED_NUM_THREADS);// Runtime.getRuntime().availableProcessors()
-        }
-        case FORK_JOIN: {
+        case FORK_JOIN:
             return forkJoinDecrypt(cipherPool, ciphertext, key, params, outputBufferLen, ciphertext.length / CUSTOM_FORK_JOIN_DIVISOR);
-        }
         default:
             return null;
         }
@@ -348,52 +346,53 @@ public class TestDecrypt {
 //                + "0123456789012345".getBytes(java.nio.charset.Charset.forName("UTF-8"));
 
         ControlTests.startSingleThreadExecutor();
+        try {
 
-        Provider bouncyCastle = Security.getProvider(PROVIDER_BOUNCY_CASTLE);
-        Provider androidOpenSSL = Security.getProvider(PROVIDER_ANDROID_OPEN_SSL);
-        Provider sunJCE = Security.getProvider(PROVIDER_SUN_JCE);
-        int NUM_RUNS = 200;
+            Provider bouncyCastle = Security.getProvider(PROVIDER_BOUNCY_CASTLE);
+            Provider androidOpenSSL = Security.getProvider(PROVIDER_ANDROID_OPEN_SSL);
+            Provider sunJCE = Security.getProvider(PROVIDER_SUN_JCE);
+            int NUM_RUNS = 200;
 
 //        for (int y = 1; y < 2; y++) {//TEST_PLAINTEXT_BYTE_LENGTH *= 2
 
             final byte[] plaintext = secureRandomBytes(TEST_PLAINTEXT_BYTE_LENGTH);
 
 //            for (int j = 2; j < 2 + NUM_RUNS; j += 1) {
-                testRunSuccess = true;
+            testRunSuccess = true;
 
-                try {
+            try {
 
-                    for (int x = 0; x < TESTS_TO_RUN.length; x++) {
-                        if (bouncyCastle != null) {
-                            // Bouncy Castle
-                            for (int i = 0; i < BOUNCY_CASTLE_ALGORITHMS.length; i++)
-                                test(BOUNCY_CASTLE_ALGORITHMS[i], bouncyCastle, plaintext, TESTS_TO_RUN[x]);
-                        }
-                        if (androidOpenSSL != null) {
-                            // AndroidOpenSSL
-                            for (int i = 0; i < ANDROID_OPEN_SSL_ALGORITHMS.length; i++)
-                                test(ANDROID_OPEN_SSL_ALGORITHMS[i], androidOpenSSL, plaintext, TESTS_TO_RUN[x]);
-                        }
-                        if (sunJCE != null) {
-                            // Sun Java Cryptography Extension
-                            for (int i = 0; i < SUN_JCE_ALGORITHMS.length; i++)
-                                test(SUN_JCE_ALGORITHMS[i], sunJCE, plaintext, TESTS_TO_RUN[x]);
-                        }
+                for (int x = 0; x < TESTS_TO_RUN.length; x++) {
+                    if (bouncyCastle != null) {
+                        // Bouncy Castle
+                        for (int i = 0; i < BOUNCY_CASTLE_ALGORITHMS.length; i++)
+                            test(BOUNCY_CASTLE_ALGORITHMS[i], bouncyCastle, plaintext, TESTS_TO_RUN[x]);
                     }
-
-                } catch (Throwable t) {
-                    testRunSuccess = false;
-                    t.printStackTrace();
+                    if (androidOpenSSL != null) {
+                        // AndroidOpenSSL
+                        for (int i = 0; i < ANDROID_OPEN_SSL_ALGORITHMS.length; i++)
+                            test(ANDROID_OPEN_SSL_ALGORITHMS[i], androidOpenSSL, plaintext, TESTS_TO_RUN[x]);
+                    }
+                    if (sunJCE != null) {
+                        // Sun Java Cryptography Extension
+                        for (int i = 0; i < SUN_JCE_ALGORITHMS.length; i++)
+                            test(SUN_JCE_ALGORITHMS[i], sunJCE, plaintext, TESTS_TO_RUN[x]);
+                    }
                 }
 
-                if (testRunSuccess) {
-                    System.out.println("\n*** TEST RUN SUCCESS ***\n");
-                } else {
-                    System.err.println("\n*** TEST RUN FAILURE ***\n");
-                }
+            } catch (Throwable t) {
+                testRunSuccess = false;
+                t.printStackTrace();
+            }
+
+            if (testRunSuccess) {
+                System.out.println("\n*** TEST RUN SUCCESS ***\n");
+            } else {
+                System.err.println("\n*** TEST RUN FAILURE ***\n");
+            }
 //            }
 
-            if(BOUNCY_CASTLE_ALGORITHMS.length == 1) {
+            if (BOUNCY_CASTLE_ALGORITHMS.length == 1) {
                 System.out.println("algorithm = " + BOUNCY_CASTLE_ALGORITHMS[0] + ", " + sunJCE);// bouncyCastle, androidOpenSSL
                 System.out.println("multithreaded num threads = " + MULTITHREADED_NUM_THREADS);
                 System.out.println("file size = " + TEST_PLAINTEXT_BYTE_LENGTH);
@@ -408,7 +407,9 @@ public class TestDecrypt {
 
 //        }
 
-        ControlTests.killSingleThreadExecutor();
+        } finally {
+            ControlTests.killSingleThreadExecutor();
+        }
     }
 
     public static void main(String[] args0) throws Exception {
