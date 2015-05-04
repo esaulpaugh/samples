@@ -204,7 +204,7 @@ public class TestDecrypt {
     public static byte[] forkJoinDecrypt(CipherPool cipherPool, byte[] input, SecretKeySpec key, AlgorithmParameterSpec params, int outputLen, int maxPartLength) {
         ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
         byte[] output = new byte[outputLen];
-        ForkJoinDecryptTask task = new ForkJoinDecryptTask(cipherPool, key, params, input, output, maxPartLength);
+        ForkJoinDecryptTask task = new ForkJoinDecryptTask(cipherPool, key, params, input, 0, input.length, output, maxPartLength);
         pool.invoke(task);
         pool.awaitQuiescence(TIMEOUT_SECONDS, TimeUnit.SECONDS);
         pool.shutdownNow();

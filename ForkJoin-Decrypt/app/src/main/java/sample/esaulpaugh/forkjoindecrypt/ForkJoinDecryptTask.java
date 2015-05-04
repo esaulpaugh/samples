@@ -39,7 +39,7 @@ public class ForkJoinDecryptTask extends RecursiveAction {
     private static final String ANDROID_OPEN_SSL = "AndroidOpenSSL";
     private static final String SUFFIX_NO_PADDING = "/NoPadding";
 
-    private static final int DEFAULT_FORK_JOIN_DIVISOR = ((int) Math.pow(2, 9)) - 1;// 511
+    public static final int DEFAULT_FORK_JOIN_DIVISOR = ((int) Math.pow(2, 9)) - 1;// 511
 
     private final ForkJoinJDecryptParams params;
     private final int offset;
@@ -70,6 +70,16 @@ public class ForkJoinDecryptTask extends RecursiveAction {
         this(algorithm, null, key, cipherParams, input, output, input.length / DEFAULT_FORK_JOIN_DIVISOR);
     }
 
+    /**
+     *
+     * @param algorithm
+     * @param provider
+     * @param key
+     * @param cipherParams
+     * @param input
+     * @param output
+     * @param maxPartLength
+     */
     public ForkJoinDecryptTask(String algorithm, Provider provider, SecretKeySpec key, AlgorithmParameterSpec cipherParams, byte[] input, byte[] output, int maxPartLength) {
         this(new CipherPool(algorithm, provider), key, cipherParams, input, output, maxPartLength);
     }
@@ -84,7 +94,22 @@ public class ForkJoinDecryptTask extends RecursiveAction {
      * @param maxPartLength
      */
     public ForkJoinDecryptTask(CipherPool cipherPool, SecretKeySpec key, AlgorithmParameterSpec cipherParams, byte[] input, byte[] output, int maxPartLength) {
-        this(new ForkJoinJDecryptParams(cipherPool, key, input, output, maxPartLength), 0, input.length, cipherParams, true);
+        this(cipherPool, key, cipherParams, input, 0, input.length, output, maxPartLength);
+    }
+
+    /**
+     *
+     * @param cipherPool
+     * @param key
+     * @param cipherParams
+     * @param input
+     * @param inputOffset
+     * @param inputLen
+     * @param output
+     * @param maxPartLength
+     */
+    public ForkJoinDecryptTask(CipherPool cipherPool, SecretKeySpec key, AlgorithmParameterSpec cipherParams, byte[] input, int inputOffset, int inputLen, byte[] output, int maxPartLength) {
+        this(new ForkJoinJDecryptParams(cipherPool, key, input, output, maxPartLength), inputOffset, inputLen, cipherParams, true);
     }
 
     private ForkJoinDecryptTask(ForkJoinJDecryptParams params, int offset, int inputLen, AlgorithmParameterSpec cipherParams, boolean finalPart) {
