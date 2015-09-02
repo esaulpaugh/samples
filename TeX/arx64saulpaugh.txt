@@ -179,6 +179,12 @@ XCRUSH is an ambitious attempt at creating a different kind of block cipher whic
 
 \begin{thebibliography}{9}
 	
+	\bibitem{aes}
+	Joan Daemen and Vincent Rijmen,
+	\emph{AES Proposal: Rijndael},
+	 presented at the First Advanced Encryption Standard (AES) Candidate Conference,
+	1998
+	
 	\bibitem{marsaglia03}
 	George Marsaglia,
 	\emph{Xorshift RNGs},
