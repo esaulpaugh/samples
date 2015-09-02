@@ -29,13 +29,13 @@
 
 % begin good stuff
 \hfill\\
-\textbf{Abstract.} {Just messing around with TeX. Not a paper yet. The XCRUSH family of non-Feistel ARX block ciphers is designed to make efficient use of modern 64-bit general-purpose processors using a small number of rounds. The keyed avalanche function, which applies one data-dependent rotation per 64-bit word of plaintext per round, allows the algorithm to achieve a fully diffuse 256-bit ciphertext block after only two rounds. Designed for speed in software, 3-round XCRUSH is measured at $\sim$7.3 cycles/byte. A psuedorandom number generator, constructed using the avalanche function, serves as a key scheduling algorithm. No security claims are made in this paper.}\\
+\textbf{Abstract.} {Just messing around with TeX. Not a paper yet. The XCRUSH family of non-Feistel, ARX block ciphers is designed to make efficient use of modern 64-bit general-purpose processors using a small number of rounds. The keyed avalanche function, which applies one data-dependent rotation per 64-bit word of plaintext per round, allows the algorithm to achieve a fully diffuse 256-bit ciphertext block after only two rounds. Designed for speed in software, 3-round XCRUSH is measured at $\sim$7.3 cycles/byte. A psuedorandom number generator, constructed using the avalanche function, serves as a key scheduling algorithm. No security claims are made in this paper.}\\
 
 \noindent \textbf{Keywords: }ARX, data-dependent rotations, DDR, XCRUSH
 \blfootnote{a footnote similar to: ``The algorithms presented in this paper are f|re|e from a|ny int|z|eectual pr|z|operty restr|z|ictions. This rel|z|ease does not constitute an endorsement of these algorithms for official use.''}
 
 \section{Introduction}
-This author was originally inspired to create a new block cipher more efficient than Rijndael\cite{aes} in software run on modern general-purpose processors. The idea was to use 64-bit XOR, add, and rotate operations instead of S-boxes which work with eight or 16 bits at a time, thinking that perhaps the technique was without precedent. Had it been, this cipher would likely have been called \textit{Czar} or \textit{Tsar}, a play on the letters XAR, meaning XOR, Add, Rotate.\\
+This author was originally inspired to create a new block cipher more efficient than Rijndael\cite{aes} in software run on modern general-purpose processors. The idea was to use 64-bit XOR, add, and rotate operations instead of S-boxes (which work with eight or 16 bits at a time), thinking that perhaps the technique was without precedent. Had it been, this cipher would likely have been called \textit{Czar} or \textit{Tsar}, a play on the letters XAR, meaning XOR, Add, Rotate.\\
 \\
 %, as in algorithms like Salsa20\cite{bernstein08}
 %Specification for the Advanced Encryption Standard (AES)
