@@ -8,7 +8,7 @@
 \usepackage{graphicx}
 \usepackage[hang,flushmargin]{footmisc} 
 
-\title{The XCRUSH Family of ARX Block Ciphers}
+\title{XCRUSH: A Family of ARX Block Ciphers}
 \author{
 	Evan Saulpaugh\\
 	\href{mailto:evan.saulpaugh@gmail.com}{evan.saulpaugh@gmail.com}
@@ -27,12 +27,6 @@
 
 %Taking inspiration from the class of fast pseudorandom number generators known as xorshift\cite{marsaglia03}, a technique was developed to
 
-
-
-
-
-
-
 % begin good stuff
 \hfill\\
 \textbf{Abstract.} {Just messing around with TeX. Not a paper yet. The XCRUSH block cipher family is designed to make efficient use of modern 64-bit general-purpose processors using a small number of rounds. The keyed avalanche function, which applies one data-dependent rotation per 64-bit word of plaintext per round, allows the algorithm to achieve a fully diffuse 256-bit ciphertext block after only two rounds. Designed for speed in software, 3-round XCRUSH is measured at $\sim$7.3 cycles/byte. A psuedorandom number generator, constructed using the avalanche function, serves as a key scheduling algorithm. No security claims are made in this paper.}\\
@@ -42,7 +36,7 @@
 \blfootnote{a footnote similar to: ``The algorithms presented in this paper are f|re|e from a|ny int|z|eectual pr|z|operty restr|z|ictions. This rel|z|ease does not constitute an endorsement of these algorithms for official use.''}
 
 \section{Introduction}
-This author was originally inspired to create a new block cipher more efficient than Rijndael\cite{aes} in software run on modern general-purpose processors. The idea was to use 64-bit xor, add, and rotate operations instead of S-boxes which work with eight or 16 bits at a time, thinking that perhaps the technique was without precedent. Had it been, this cipher would likely have been called \textit{Czar} or \textit{Tsar}, a play on the letters XAR, meaning xor, add, rotate.\\
+This author was originally inspired to create a new block cipher more efficient than Rijndael\cite{aes} in software run on modern general-purpose processors. The idea was to use 64-bit XOR, add, and rotate operations instead of S-boxes which work with eight or 16 bits at a time, thinking that perhaps the technique was without precedent. Had it been, this cipher would likely have been called \textit{Czar} or \textit{Tsar}, a play on the letters XAR, meaning XOR, Add, Rotate.\\
 \\
 %, as in algorithms like Salsa20\cite{bernstein08}
 %Specification for the Advanced Encryption Standard (AES)
@@ -50,7 +44,7 @@ This author was originally inspired to create a new block cipher more efficient 
 %In pursuit of a new, efficient block cipher, diffusion after a small number of rounds became the goal. Various techniques were tried.
 Experimenting with determining a rotation by 0-255 bits of the full 256-bit block with one byte of key, it became clear that key-dependent rotations were ineffective for achieving diffusion except after a large number of rounds. Seeing the obvious advantage over fixed and key-dependent rotations, data-dependent rotations came to be the tool of choice.\\
 \\
-XCRUSH has a fixed block length of 256 bits and supports key sizes of 128, 192, and 256 bits. Developed uninfluenced by any prior work involving data-dependent rotations, the techniques presented in this paper are the result of this author's attempts to achieve fast diffusion with 64-bit arithmetic.\\
+XCRUSH has a fixed block length of 256 bits and supports key sizes of 128, 192, and 256 bits. Developed uninfluenced by any prior work involving data-dependent rotations, the techniques presented in this paper are the result of this author's attempts to achieve fast diffusion in software with 64-bit arithmetic.\\
 
 \begin{table}[h!]
 	\begin{center}
@@ -80,7 +74,7 @@ Let $P = (P_1,P_2,P_3,P_4)$ and $C = C_1,C_2,C_3,C_4)$ be the 256-bit plaintext 
 \begin{algorithmic}
 	\STATE $(T_1,T_2,T_3,T_4) = P = (P_1,P_2,P_3,P_4)$
 	\STATE $SK = (SK_1,SK_2,...,SK_{16})$
-	\FOR {$i = 0$ to 2}
+	\FOR {$i = 0$ to $2$}
 	\STATE $j = i * 4$
 	\STATE $(RK_1,RK_2,RK_3,RK_4) = (SK_j,SK_{j+1},SK_{j+2},SK_{j+3})$
 	\STATE $T_1 = A(T_1, T_2 + T_3 + T_4 + RK_1)$
@@ -152,24 +146,23 @@ $N(S) = (Y,S)$\\
 
 By making the addition to, but more importantly the bitwise rotation of each 64-bit word of plaintext dependent on the other three words in the plaintext block, and by allowing the output of one avalanche operation to feed into the next, we can ensure that a small change in the plaintext block will tend to result in a very large change in the output block after each round.\\
 \\
-\\compress the remainder of the plaintext and a round key into a rotation distance\\
-All three variants have same number of rounds.\\
-\\
 Given this construction, it appeared natural to simply add a 64-bit word of key material to the sum of the words of plaintext going into the avalanche function. In this way of applying key material with every invokation, confusion and diffusion are achieved efficiently and simultaneously.\\
 \\
-xor at the end to obscure all the inputs to the final round.
+Finally, the block is XORed with the remaining 256 bits of subkey in order to obscure all the inputs to the final invokations of the avalanche function.
 
 \subsection[]{Key Expansion}
 
-Fast DRBG based on xorshift\cite{marsaglia03}, chosen for speed and simplicity of implementation.\\
+The expansion of the key is done by way of seeding a deterministic random bit generator, also known as a pseudorandom number generator, with the encryption key to produce the subkeys used in the encryption process. The PRNG is based on xorshift generators\cite{marsaglia03} and is chosen for speed and simplicity of implementation.\\
 \\
 The complex one-way nature of the key expansion is intended to make it difficult for an attacker to use information about a subkey to recover infomation about the other subkeys or about the master key. Additionally, the PRNG method of subkey derivation, by which a stream of subkeys is dependent on all the bits of the master key, is intended to mitigate related key attacks.\\
 \\
-The constant $C$, namely the leading decimal digits of the fractional part of the square root of two, is arbitrarily chosen to ensure that the PRNG is not seeded with all zeros.
+The constant $C$, namely the leading decimal digits of the fractional part of the square root of two, is arbitrarily chosen to ensure that the PRNG is not seeded with all zeros.\\
+\\
+Note that, regardless of key size, XCRUSH is composed of three avalanche rounds followed by an XOR.
 
 \begin{figure}[p]
 	\centering
-	\includegraphics[width=6in]{XCRUSH_new3}
+	\includegraphics[width=6in]{XCRUSH_new5}
 	\caption[]
 	{A round of XCRUSH.}
 \end{figure}
@@ -182,7 +175,7 @@ The constant $C$, namely the leading decimal digits of the fractional part of th
 
 \section{Concluding Remarks}
 
-XCRUSH may eventually be found suitable for stuff. Ambitious. May not lend itself to traditional cryptanalysis.
+XCRUSH is an ambitious attempt at creating a different kind of block cipher which may or may not lend itself to traditional cryptanalysis. It is the hope of this author that it may serve to advance the field of cryptography in its own way.
 
 \begin{thebibliography}{9}
 	
