@@ -32,7 +32,7 @@
 \blfootnote{The algorithms presented in this paper are free from any intellectual property restrictions. This release does not constitute an endorsement of these algorithms for official use.}
 
 \section{Introduction}
-This author was originally inspired to create a new block cipher more efficient than Rijndael\cite{aes} in software run on modern general-purpose processors. The idea was to use 64-bit XOR, add, and rotate operations instead of lookup tables (which work with eight or 16 bits at a time), thinking that perhaps the technique was without precedent. Had it been, this cipher would likely have been called \textit{Czar} or \textit{Tsar}, a play on the letters XAR, meaning XOR, Add, Rotate.\\
+This author was originally inspired to create a new block cipher more efficient than Rijndael\cite{aes} in software run on modern general-purpose processors. The idea was to use 64-bit XOR, add, and rotate operations instead of lookup tables which work with only eight or 16 bits at a time, thinking that perhaps the technique was without precedent. Had it been, this cipher would likely have been called \textit{Czar} or \textit{Tsar}, a play on the letters XAR, meaning XOR, Add, Rotate.\\
 \\
 In experimenting with rotations of a 256-bit block using eight bits of key to determine the rotation distance, it became obvious that key-dependent rotations were just as ineffective as fixed rotations for achieving diffusion quickly. Subsequently and by default, data-dependent rotations came to be the tool of choice.\\
 \\
@@ -247,16 +247,19 @@ int compress(unsigned long long x) {
 long long avalanche(unsigned long long v, unsigned long long a) {
     v += a;
     const int shiftAmount = compress(a);
-    return (v << shiftAmount) | (v >> (LONG_LONG_SIZE - shiftAmount));// ROTATE LEFT
+    /* ROTATE LEFT */
+    return (v << shiftAmount) | (v >> (LONG_LONG_SIZE - shiftAmount));
 }
 
 long long unavalanche(unsigned long long v, unsigned long long a) {
     const int shiftAmount = compress(a);
-    v = (v >> shiftAmount) | (v << (LONG_LONG_SIZE - shiftAmount));// ROTATE RIGHT
+    /* ROTATE RIGHT */
+    v = (v >> shiftAmount) | (v << (LONG_LONG_SIZE - shiftAmount));
     return v - a;
 }
 
-void _encrypt(unsigned long long plaintext[], int offset, int length, unsigned long long subkeys[16]) {
+void _encrypt(unsigned long long plaintext[], int offset, int length,
+        unsigned long long subkeys[16]) {
 
     const long __0 = subkeys[0];
     const long __1 = subkeys[1];
@@ -325,7 +328,8 @@ void _encrypt(unsigned long long plaintext[], int offset, int length, unsigned l
     }
 }
 
-void decrypt(unsigned long long ciphertext[], int offset, int length, unsigned long long subkeys[16]) {
+void decrypt(unsigned long long ciphertext[], int offset,
+        int length, unsigned long long subkeys[16]) {
 
     const long __0 = subkeys[0];
     const long __1 = subkeys[1];
@@ -402,7 +406,8 @@ long long next() {
     return S_1;
 }
 
-void expand_key(unsigned long long key[], int keyLen, unsigned long long subkeybuf[NUM_SUBKEYS]) {
+void expand_key(unsigned long long key[], int keyLen,
+        unsigned long long subkeybuf[NUM_SUBKEYS]) {
     switch (keyLen) {
     case KEY_LEN_128_BITS:
         S_1 = key[0];
