@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="samples.esaulpaugh.encryptednotepad.ListActivity">
+
+    <TextView
+        android:id="@+id/new_note"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:text="new note"
+        android:textColor="@color/pink"
+        android:gravity="center"
+        android:background="@drawable/border_black" />
+
+    <!--<View-->
+        <!--android:id="@+id/spacer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="2dp"-->
+        <!--android:background="#FF000000"-->
+        <!--android:layout_below="@id/new_note"/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/new_folder"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:layout_below="@id/new_note"-->
+        <!--android:text="New Folder"-->
+        <!--android:gravity="center"-->
+        <!--android:background="#FFDDDDDD"/>-->
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/new_note"
+        android:background="@color/neotokyo"
+        android:padding="4dp"/>
+
+</RelativeLayout>

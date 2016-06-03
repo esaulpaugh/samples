@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 3F51B5 -->
+    <!-- 303F9F -->
+    <!-- FF4081 -->
+
+    <color name="colorPrimary">@color/neotokyo</color>
+    <color name="colorPrimaryDark">@color/neotokyodark</color> <!-- 40348B -->
+    <color name="colorAccent">#FF0BFF</color>
+
+    <color name="purp">#FF5A4BC7</color>
+    <color name="pink">#FF0BFF</color>
+    <color name="neotokyo">#FF393340</color>
+    <color name="neotokyodark">#FF1C1A20</color>
+
+    <!-- 64 52 139 -->
+
+    <!--FF393340-->
+
+    <!--  57 51 64   -->
+
+    <!--    28 26 32 -->
+
+    <!--    1C1A20  -->
+
+
+
+</resources>

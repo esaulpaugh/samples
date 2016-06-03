@@ -1,0 +1,5 @@
+<resources>
+    <!--<string name="app_name">EncryptedNotepad</string>-->
+    <string name="app_name">Yoyo</string>
+    <string name="title_activity_enter_password">EnterPasswordActivity</string>
+</resources>

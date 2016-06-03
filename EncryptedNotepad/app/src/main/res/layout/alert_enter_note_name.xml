@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="240dp"
+    android:layout_height="wrap_content"
+    android:background="@color/neotokyodark">
+
+    <EditText
+        android:id="@+id/enter_element_name"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Enter name"
+        android:inputType="text"
+        android:textColorHint="@android:color/white"
+        android:textColor="@android:color/white"
+        android:paddingStart="10dp"
+        android:background="@color/neotokyo"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/create"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:text="create"/>-->
+
+
+</LinearLayout>
