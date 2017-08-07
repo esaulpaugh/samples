@@ -3,6 +3,7 @@ package com.company;
 import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.MessageDigest;
 import java.util.Scanner;
@@ -43,11 +44,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * <<< BACK
  * >>> FORWARD
  * <<< BACK
- * <p>
+ *
  * elapsed millis = 0.437397
  * RESULT = null
  */
-public class Main {
+public class BinarySearch {
 
     private static final StringBuilder STRING_BUILDER = new StringBuilder();
 
@@ -117,7 +118,8 @@ public class Main {
         }
     }
 
-    private static byte[] binarySearch(RandomAccessFile file, long start, long pos, long end, byte[] query, byte[] result) throws Exception {
+    // TODO multiply by lineLength to land cleanly on token start
+    private static byte[] binarySearch(RandomAccessFile file, long start, long pos, long end, byte[] query, byte[] result) throws IOException {
 
         final int lineLength = result.length + CRLF_LEN_BYTES;
 
