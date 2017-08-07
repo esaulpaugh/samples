@@ -10,42 +10,42 @@ import java.util.Scanner;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- : zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
- SHA1 = B693E9FA06A8E658306A64E1166039A14AD36E5A
- SEARCHING 321572487 TOKENS...
- >>> FORWARD
- <<< BACK
- >>> FORWARD
- >>> FORWARD
- <<< BACK
- >>> FORWARD
- >>> FORWARD
- <<< BACK
- <<< BACK
- >>> FORWARD
- <<< BACK
- >>> FORWARD
- <<< BACK
- >>> FORWARD
- <<< BACK
- <<< BACK
- <<< BACK
- >>> FORWARD
- >>> FORWARD
- >>> FORWARD
- <<< BACK
- >>> FORWARD
- <<< BACK
- <<< BACK
- >>> FORWARD
- <<< BACK
- <<< BACK
- <<< BACK
- >>> FORWARD
- <<< BACK
-
- elapsed millis = 0.437397
- RESULT = null
+ * : zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+ * SHA1 = B693E9FA06A8E658306A64E1166039A14AD36E5A
+ * SEARCHING 321572487 TOKENS...
+ * >>> FORWARD
+ * <<< BACK
+ * >>> FORWARD
+ * >>> FORWARD
+ * <<< BACK
+ * >>> FORWARD
+ * >>> FORWARD
+ * <<< BACK
+ * <<< BACK
+ * >>> FORWARD
+ * <<< BACK
+ * >>> FORWARD
+ * <<< BACK
+ * >>> FORWARD
+ * <<< BACK
+ * <<< BACK
+ * <<< BACK
+ * >>> FORWARD
+ * >>> FORWARD
+ * >>> FORWARD
+ * <<< BACK
+ * >>> FORWARD
+ * <<< BACK
+ * <<< BACK
+ * >>> FORWARD
+ * <<< BACK
+ * <<< BACK
+ * <<< BACK
+ * >>> FORWARD
+ * <<< BACK
+ * <p>
+ * elapsed millis = 0.437397
+ * RESULT = null
  */
 public class Main {
 
@@ -142,39 +142,32 @@ public class Main {
 
         pos = file.getFilePointer();
 
-        if (r == result.length) {
-
-            final int diff = compare(query, result);
+        final int diff = compare(query, result);
 //            final int diff = UnsignedBytes.lexicographicalComparator().compare(query, result);
-            if (diff < 0) {
-                STRING_BUILDER.append("<<< BACK\n");
-                end = pos - lineLength;
-                long mid = (start + end) / 2;
-                if(end - mid < lineLength) {
-                    mid = end - lineLength;
-                }
-                return binarySearch(file, start, mid, end, query, result);
-            } else if (diff > 0) {
-                STRING_BUILDER.append(">>> FORWARD\n");
-                start = pos;
-                long mid = (start + end) / 2;
-                return binarySearch(file, pos, mid, end, query, result);
-            } else {
-                return result;
+        if (diff < 0) {
+            STRING_BUILDER.append("<<< BACK\n");
+            end = pos - lineLength;
+            long mid = (start + end) / 2;
+            if (end - mid < lineLength) {
+                mid = end - lineLength;
             }
+            return binarySearch(file, start, mid, end, query, result);
+        } else if (diff > 0) {
+            STRING_BUILDER.append(">>> FORWARD\n");
+            start = pos;
+            long mid = (start + end) / 2;
+            return binarySearch(file, pos, mid, end, query, result);
         }
-
-        throw new Exception("1111");
+        return result;
     }
 
-    public static int compare(byte[] left, byte[] right) {
-        for (int i = 0, j = 0; i < left.length && j < right.length; i++, j++) {
-            int a = (left[i] & 0xff);
-            int b = (right[j] & 0xff);
-            if (a != b) {
+    private static int compare(byte[] query, byte[] result) {
+        for (int i = 0; i < query.length; i++) {
+            int a = query[i] & 0xFF;
+            int b = result[i] & 0xFF;
+            if (a != b)
                 return a - b;
-            }
         }
-        return left.length - right.length;
+        return 0;
     }
 }
